@@ -8,7 +8,7 @@
 	],
 	"require": {
 		"php": ">=5.2",
-		"zendframework/zendframework1": ">=1.12.0"
+		"psr/log": "1.0"
 	},
     "autoload": {
         "classmap": ["./"]

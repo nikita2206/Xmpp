@@ -52,6 +52,10 @@ class Stream
     private $_connected = false;
     private $_errorNumber = 0;
     private $_errorString = '';
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
     private $_logger = null;
 
     /**
@@ -64,11 +68,10 @@ class Stream
      * @param resource $context      Context of the stream
      */
     public function __construct(
-        $remoteSocket, $timeOut = null, $flags = null, $context = null
+        $remoteSocket, $timeOut = null, $flags = null, $context = null, \Psr\Log\LoggerInterface $logger
     ) {
 
-        // Attempt to set up logging
-        $this->_logger = $this->_getLogger(Zend_Log::EMERG);
+        $this->_logger = $logger;
 
         // Attempt to make the connection. stream_socket_client needs to be
         // called in the correct way based on what we have been passed.
@@ -132,22 +135,9 @@ class Stream
     }
 
     /**
-     * Set up the instance of Zend_Log for doing logging.
-     *
-     * @param int $logLevel The level of logging to be done
-     *
-     * @return Zend_Log
-     */
-    private function _getLogger($logLevel)
-    {
-        $writer = new Zend_Log_Writer_Stream('php://output');
-        return new Zend_Log($writer);
-    }
-
-    /**
      * Returns whether or not this object is currently connected to anything.
      *
-     * @return booleans
+     * @return boolean
      */
     public function isConnected()
     {
@@ -185,7 +175,7 @@ class Stream
      *
      * @param string $message Content to be sent down the stream
      *
-     * @return void
+     * @return int The number of bytes sent
      */
     public function send($message)
     {

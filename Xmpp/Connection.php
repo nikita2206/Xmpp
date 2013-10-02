@@ -79,7 +79,7 @@ class Xmpp_Connection
     /**
      * Class that performs logging
      *
-     * @var Zend_Log
+     * @var \Psr\Log\LoggerInterface
      */
     private $_logger = null;
     private $_mechanisms = array();
@@ -141,20 +141,20 @@ class Xmpp_Connection
      * @param string $userName Username to authenticate with
      * @param string $password Password to authenticate with
      * @param string $host     Host name of the server to connect to
-     * @param string $ssl      Whether or not to connect over SSL if it is
+     * @param int    $ssl      Whether or not to connect over SSL if it is
      *                         available.
-     * @param int    $logLevel Level of logging to be performed
+     * @param \Psr\Log\LoggerInterface $logger
      * @param int    $port     Port to use for the connection
      * @param string $resource Identifier of the connection
      */
     public function __construct(
-        $userName, $password, $host, $ssl = true, $logLevel = Zend_Log::EMERG,
+        $userName, $password, $host, $ssl = true, \Psr\Log\LoggerInterface $logger,
         $port = 5222, $resource = 'NewXmpp'
     ) {
 
         // First set up logging
         $this->_host = $host;
-        $this->_logger = $this->getLogger($logLevel);
+        $this->_logger = $logger;
         $this->_password = $password;
         $this->_port = $port;
         $this->_resource = $resource;
@@ -739,20 +739,7 @@ class Xmpp_Connection
     protected function getStream(
         $remoteSocket, $timeOut = null, $flags = null, $context = null
     ) {
-        return new Stream($remoteSocket, $timeOut, $flags, $context);
-    }
-
-    /**
-     * Gets the logging class
-     *
-     * @param int $logLevel Logging level to be used
-     *
-     * @return Zend_Log
-     */
-    protected function getLogger($logLevel)
-    {
-        $writer = new Zend_Log_Writer_Stream('php://output');
-        return new Zend_Log($writer);
+        return new Stream($remoteSocket, $timeOut, $flags, $context, $this->_logger);
     }
 
     /**
