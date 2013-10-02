@@ -1,5 +1,5 @@
 {
-	"name": "alexmace/xmpp",
+	"name": "nikita2206/xmpp",
 	"description": "A client library for talking to XMPP servers.",
 	"homepage": "http://m.me.uk/xmpp/",
 	"license": "PHP-3.0",
