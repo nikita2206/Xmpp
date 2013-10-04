@@ -651,7 +651,8 @@ class Xmpp_Connection
     {
 
         // Get the first part of the JID
-        $firstPart = array_shift(explode('/', $to));
+        $toExploded = explode("/", $to);
+        $firstPart = array_shift($toExploded);
 
         if (in_array($firstPart, $this->joinedRooms)) {
             $type = 'groupchat';
