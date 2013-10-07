@@ -358,9 +358,7 @@ class Xmpp_Connection
             // If there was a starttls tag in there, and this connection has SSL
             // enabled, then we should tell the server that we will start up tls as
             // well.
-            if (preg_match("/<starttls xmlns=('|\")urn:ietf:params:xml:ns:xmpp-tls('|\")>(<required\/>)?<\/starttls>/", $response->asXML()) != 0
-                && $this->_ssl === true
-            ) {
+            if ($response->xpath("//*[local-name()='starttls']") && $this->_ssl === true) {
                 $this->_logger->debug('Informing server we will start TLS');
                 $message = "<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/>";
                 $this->_stream->send($message);
