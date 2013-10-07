@@ -669,6 +669,35 @@ class Xmpp_Connection
     }
 
     /**
+     * @param string $to jid
+     * @param string $html Html contents of the message
+     * @param string $fallbackText Plain text contents of the message
+     * @return bool
+     */
+    public function htmlMessage($to, $html, $fallbackText)
+    {
+        // Get the first part of the JID
+        $toExploded = explode("/", $to);
+        $firstPart = array_shift($toExploded);
+
+        if (in_array($firstPart, $this->joinedRooms)) {
+            $type = 'groupchat';
+            $to = $firstPart;
+        } else {
+            $type = 'normal';
+        }
+
+        $message = "<message to='" . $to . "' from='" . $this->_userName . '@'
+            . $this->_realm . '/' . $this->_resource . "' type='" . $type
+            . "' xml:lang='en'><html xmlns='http://jabber.org/protocol/xhtml-im'><body xmlns='http://www.w3.org/1999/xhtml'>{$html}</body></html><body>"
+            . $this->encode($fallbackText)
+            . "</body></message>";
+        $this->_stream->send($message);
+
+        return true;
+    }
+
+    /**
      * Send a ping to the server.
      *
      * @return boolean
